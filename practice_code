@@ -1,0 +1,385 @@
+#basics
+
+#a quick look at the Rstudio environment
+
+#type any number in the console
+#for example: 1
+
+#now create new Rcode
+#type the same here
+1
+#now run it (ctrl+enter or press the button up on the right)
+#you can run multiple lines
+1
+2
+3
+#or use ctrl+shift+p
+
+#use # to comment
+
+
+#assignment operator:
+#the operator to rule them all
+a <- 1
+#we have created a new variable in the enviroment
+a <- 2 #overwrites the variable
+a <- NULL #empties it
+rm(a) #removes it from the environment
+
+
+#to clear all environment, use
+rm(list=ls()) #what does this mean? function rm() removes variable, but only accepts character strings
+#to search for help, type ?? before a function
+#maybe put this part later
+
+#for basic operations, use traditional mathematical notation
+2 + 3
+2/3 * 3
+2/(3 * 3)
+4^2
+exp(4) #exponents
+4^(1/2)
+sqrt(4) #sqrt() is a basic function
+log(2) #natural log
+l100 <- log10(100) #log 10
+#these operations return values in a numerical vector (we'll get to that later)
+
+temp<-(5+3)*6
+temp=(5+3)*6
+
+sqrt(temp)
+sqrt((5+3)*6)
+
+#to see the class of an object, use the function class()
+class(2)
+class(sqrt(4)) #see how you can plug a function inside another function (can't do that with stata)
+class(l100)
+
+#let's look at other objects classes
+#logical (dummy)
+TRUE
+FALSE
+as.numeric(TRUE)
+as.numeric(F)
+4^(1/2) == sqrt(4)
+4^(1/2) > sqrt(4)
+class( 4^(1/2) < sqrt(4) )
+#can you convert one class to another? of course!
+as.numeric(4^(1/2) == sqrt(4)) #1
+as.numeric(4^(1/2) < sqrt(4)) #2
+
+#character class (strings)
+"hello"
+class("hello")
+#string manipulation
+grep("n", "string manipulation")
+substr("string manipulation", 7, 15)
+substr("Eleonora is confused", 1, 8)
+gsub("t","s","tttts")
+#https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html
+
+
+#vectors (super important)
+c(1 , 57, 99, 2)
+c("Hello", "", "World")
+vector.a <- c(1, 0, 4, 3)
+vector.b <- c(T, F, T, T, F)
+
+c(1 , 57, 99, 2) / 2
+vector.a + 4
+
+
+length(vector.b)
+as.numeric(vector.b)
+#pipe operator (ctrl+shift+m) (cmd+shift+m on macs):
+install.packages("dplyr")
+library(dplyr)
+vec1 <- c(1, 0, 0, 1)
+vec1 <- as.logical(vec1)
+as.logical(c(1, 0, 0, 1))
+vector.c <- c(1, 0, 0, 1) %>% as.logical()
+#or you can have a sequence of numbers
+1:5
+vector.d <- c(4:10)
+10:2
+seq(10,20,0.5)
+vector.x <- seq(by = 0.5, from=10, to=20)
+#factors
+c("tie", "hat", "hat", NA, "tie", "shoe") %>%  factor()
+c("Michele", "Eleonora", "Eleonora") %>%  factor() %>% as.numeric()
+#Levels: hat shoe tie
+# The "levels" are the values the categorical data can take
+# Note that missing data does not enter the levels
+# now we get to the interesting parts
+
+#matrices
+###two-dimentional matrices
+mat <- matrix(c(1,2,3,4,5,6), nrow = 3, ncol = 2)
+#same as
+mat <- matrix(1:6,3,2)
+#you can combine vectors together to create a matrix
+rbind(vector.a, vector.c) #adds vectors row-wise
+cbind(vector.a, vector.c) #adds vectors column-wise
+#note how matrices convert all their contents to numericals
+#to recall a matrix:
+mat
+#you can perform all operations with matrices
+#scalar multiplication
+2 * mat
+#addition
+mat - 2
+mat + (matrix(rep(1:2, 6),3,2)) #try what the rep function does
+#transposition
+t(mat)
+#matrix multiplication
+mat %*% t(mat)
+#diagonals
+diag(mat)
+diag(mat %*% t(mat))
+#the class of a matrix is always "matrix", unlike vectors, whose class is the one of its contents
+class(mat) #"matrix"
+
+#data frames (super important)
+
+#matrices (and vectors too) can be converted into data frames
+as.data.frame(mat)
+#cbind:
+df <- data.frame(vector.a, vector.c)
+colnames(df) <- c("Variable1", "Variable2")
+colnames(df)[1] <- "Var1"
+#note how each vector maintains its class
+class(df$Variable2)
+#what's this?
+#selection!
+df$Var1 #returns the first column
+df[,1]
+#there's other ways to select columns and rows
+#introducting the bracket operatior
+# We ask for specific elements by subsetting with square brackets
+# you can subset ANYTHING
+# (Note that R starts counting from 1)
+#works with vectors
+vector.a[1]      
+vector.b[5]    
+vector.c[2:3]
+vector.d[vector.d>6]
+letters[18] 
+LETTERS[13] 
+month.name[9]  
+#for data frames and matrices:
+# Ask for the specific rows and columns
+#first row
+mat[1,] 
+#third row
+df[3,] 
+#second column
+df[,2] 
+df$Variable2
+df["Variable2"]
+df[,"Variable2"]
+#all different ways to do the same thing
+# Ask for a specific cell
+mat[3,2]   
+df[4,2] 
+# Perform operation on the first column
+3 * mat[,1] 
+#you can also drop a specific row or column
+df <- df[-4,]
+#again, you can pipe everything:
+data.frame(vector.a, vector.c) %>% .[,2] %>% class()
+
+
+#for loops
+print(5)
+paste0("The log base 10 of 100 is ", l100)
+
+for (i in 1:5) {
+  cat("i now equals", i, "...")
+}
+
+for (i in 1:4) {
+  print(i)
+}
+
+for (temp in c("one", "two")) {
+  cat("i now equals", temp, "...")
+}
+
+#notice that R stores the i variable with its final value at the end of the loop
+i
+#[1] 4
+
+
+for (i in 1:5) {
+  print(i * 3)
+}
+for (i in c("cat","mouse","dog")) {
+  print(gsub(i,"--","cat mouse dog"))
+}
+
+
+#while loops
+a <- 10
+while (a > 4) {
+  cat(a, "...", sep = "")
+  a <- a - 1
+}
+#a is now = 4
+
+#what is cat?
+cat(a, "...", sep = "")
+#10...
+#cat is valid only for atomic types (logical, integer, real, complex, character) and names.
+#It means you cannot call cat on a non-empty list or any type of object. In practice it simply
+#converts arguments to characters and concatenates so you can think of something like as.character() %>% paste().
+#print is a generic function so you can define a specific implementation for a certain S3 class.
+
+#if
+if (4 > 3) {
+  print("4 is greater than 3")
+} else {
+  print("4 is not greater than 3")
+}
+
+a <- 10
+while (a > 4) {
+  if (a == 5) {
+    print("a equals 4")
+  }
+  a <- a - 1
+}
+
+#functions
+set.seed(1234)
+rnorm(1, mean=2, sd=.1)
+runif(15, min=0, max=1)
+
+jiggle <- function(x, seed=1234) {
+  set.seed(seed)
+  x <- x + rnorm(1, sd=.1) #add in a bit of (controlled) noise
+  return(x)
+}
+
+jiggle(2)
+jiggle(5, seed=12)
+
+jiggle2 <- function(x) {
+  x = x + rnorm(2, sd=5)
+  return(x)
+}
+jiggle2(0)
+
+
+a <- 10
+z <- FALSE
+
+if (a == 4) {
+  print(" A equals 4")
+  z <- TRUE
+}  else {
+  while (a > 4) {
+    cat(" A currently equals", a, sep = " ")
+    a <- a - 1
+  }
+}
+
+a <- 10
+z <- FALSE
+while (a > 3) {
+  if (a == 4) {
+    print(" A equals 4")
+    z <- TRUE
+  } else {
+    cat(" A currently equals", a, sep = " ")
+  }
+  a <- a - 1
+}
+
+
+
+#we can also load a data frame from a csv file
+#let's set a working directory first (this is where you keep all the data)
+setwd("J:/IntroductiontoR-master/wd")
+#setwd("/Users/Michele/Desktop/PhD/Introduction to R/wd")
+read.csv("Scrutini2018.csv", stringsAsFactors = F) %>% View()
+S18 <- read.csv("Scrutini2018.csv", stringsAsFactors = F)
+head(S18)
+#let's clean up the names of the municipalities
+S18[,2]
+#there's an empty space at the end
+#S18$Ente <- substr(S18$Ente,1,nchar(S18$Ente)-1)
+
+#we could turn this into a function
+removelast <- function(x){
+  substr(x, 1, nchar(x)-1)
+}
+S18$Ente <- removelast(S18$Ente)
+
+#now let's remove the double names in german
+S18$Ente <- sub("/.*", "", S18$Ente)
+# this means, find, in the S18$Ente vector, any part of the string which begins with "/",
+# and has anything after it ".", for any time "*"
+# ^ starts with
+# $ ends with
+# [] groups of character
+# {} repeats
+# \ to match one of those characters
+# We can find anything we want
+install.packages('stringr')
+library('stringr')
+S18 %>% filter(str_detect(Ente, "^E"))
+S18 %>% filter(str_detect(Ente, "^[AEIOU].*R$")) #starts with a vowel, have anything inbetween, and ends with R
+S18 %>% filter(str_detect(Ente, "^S.{6}.*"))
+
+#now let's make a merge
+S13 <- read.csv("Scrutini2013.csv")
+#substr(as.character(S13$Ente),1,nchar(as.character(S13$Ente))-1)
+S13$Ente <-  removelast(as.character(S13$Ente))
+
+EALL <- merge(S18, S13, by="Ente")
+#note that unmatched observations are already dropped
+#we can get some summary stats
+summary(EALL)
+mean(EALL$Numero.votanti.x)
+median(EALL$Numero.votanti.x)
+#let's get some summary stats by group (Collegio)
+EALL %>% group_by(Collegio) %>% summarize(mean=mean(Numero.votanti.x), sum=sum(Numero.votanti.x))
+#we can get some linear models from this already
+lm(Numero.votanti.x ~ Schede.bianche.x + Schede.bianche.y + Numero.votanti.y,data=EALL) %>% summary()
+
+#let's add coordinates (note the use of a different separator in read.csv read.csv)
+EALL <- merge(EALL, read.csv("coordinates.csv", sep = ";"), by.x = "Ente", by.y = "Comune")
+colnames(EALL)[11] <- "long"
+#now we can start plotting
+install.packages("ggplot2")
+library("ggplot2")
+
+ggplot() + 
+  geom_point(aes(Numero.votanti.x, Numero.votanti.y), data=EALL)
+#you can pass the aestethics argument in any point
+ggplot(aes(Numero.votanti.x, Numero.votanti.y), data=EALL) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot(aes(Numero.votanti.x/Numero.elettori.x, Numero.votanti.y/Numero.elettori.y), data=EALL) + 
+  geom_point() + 
+  geom_smooth()
+
+install.packages("maps")
+library(maps)
+Region <- map_data('italy', c('Bolzano-Bozen', 'Trento'))
+#rbbox <- make_bbox(lon = Region$lon, lat = Region$lat, f = .1)
+
+ggplot(EALL, aes(x = long, y = lat)) +
+  geom_polygon(data = Region, fill= NA, color = "black", aes(x=long, y = lat, group = group)) +
+  geom_point(color = "black", size = 2, shape = 17) +
+  geom_text(aes(label=Ente),hjust=-0.1, vjust=-0.3, size=2) +
+  coord_fixed(1.3)
+#geom_point(color = "black", size = log(EALL$Numero.elettori.x), shape = 1)
+
+
+ggplot(EALL, aes(x = long, y = lat)) +
+  geom_polygon(data = Region, fill= NA, color = "black", aes(x=long, y = lat, group = group)) +
+  geom_point(color = "black", size = 2, shape = 17) +
+  geom_text(aes(label=Ente),hjust=-0.1, vjust=-0.3, size=2, data=EALL[EALL$Numero.elettori.x>15000,]) +
+  coord_fixed(1.3)
